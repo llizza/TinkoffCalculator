@@ -43,7 +43,6 @@ class ViewController: UIViewController {
 
     @IBOutlet weak var label: UILabel!
     
-   
     
     @IBAction func buttonPressed(_ sender: UIButton){
         guard let buttonText = sender.currentTitle else{return}
@@ -58,11 +57,6 @@ class ViewController: UIViewController {
                 return label.text = label.text! + buttonText
             }
         }
-        
-//        if label.text == "Ошибка"{
-//            label.text = buttonText
-//        }
-    
         
         //чтобы не отображать ноль перед числами
         if (label.text == "0" || label.text == "Ошибка") && buttonText == "," {
@@ -91,11 +85,14 @@ class ViewController: UIViewController {
         } catch {
             label.text = "Ошибка"
         }
-        calculationHistory.removeAll()
+        
+        
+//       calculationHistory.removeAll()
         
     }
     
     @IBAction func operationButtonPressed(_ sender: UIButton) {
+        calculationHistory.removeAll()
         guard
             let buttonText = sender.currentTitle,
             let buttonOperation = Operation(rawValue: buttonText) else{return}
@@ -142,6 +139,41 @@ class ViewController: UIViewController {
         return currentResult
     }
     
+//    @IBAction func unwindAction(unwindSegue: UIStoryboardSegue){
+//        
+//    }
+//    
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?){
+//        guard segue.identifier == "CALCULATIONS_LIST", 
+//        let calculationsListVC = segue.destination as? CalculationsListViewController
+//        else{return}
+//        
+//        calculationsListVC.result = label.text
+//    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        navigationController?.setNavigationBarHidden(true, animated: false)
+    }
+    
+    @IBAction func showCalculationsList(_ sender: Any) {
+        let sb = UIStoryboard(name: "Main", bundle: nil)
+        let calculationsListVC = sb.instantiateViewController(identifier: "CalculationsListViewController")
+//        let vc = calculationsListVC as? CalculationsListViewController
+//        vc?.result = label.text
+
+        if calculationHistory.isEmpty == true{
+            if let vc = calculationsListVC as? CalculationsListViewController{
+                vc.result = "No data"
+            }
+        }else{
+            if let vc = calculationsListVC as? CalculationsListViewController{
+                vc.result = label.text
+            }}
+        navigationController?.pushViewController(calculationsListVC, animated: true)
+//        show(calculationsListVC, sender: self)
+    
+    }
     func resetLableText(){
         label.text = "0"
     }
